@@ -49,23 +49,18 @@ int main(void)
 
   // GPIOA base address. PA2 and PA3 (for UART comms) live here.
   #define GPIOA_BASE 0x40020000UL
-  // USART2 base address
-  #define USART2_BASE 0x40004400UL
-
   // GPIOD base address (from memory map). LEDs live here. UL = unsigned long, compiler treats it as 32-bit value rather than signed integer
   #define GPIOD_BASE  0x40020C00UL
+  // USART2 base address
+  #define USART2_BASE 0x40004400UL
 
   // GPIOD_MODER is the first register in GPIOD
   #define GPIOD_MODER (*(volatile unsigned int *)(GPIOD_BASE + 0x00))
 
-  // set bit 24 to configure pin 12 (green LED) of GPIOD to "general purpose output mode"
-  GPIOD_MODER |= (1 << 24);
-  // also set bit 26 to configure pin 13 (<> LED) of GPIOD to "g/p output mode"
-  GPIOD_MODER |= (1 << 26);
-  //also set bit 28 to configure pin 14 (<> LED) of GPIOD to "g/p output mode"
-  GPIOD_MODER |= (1 << 28);
-  // also set bit 30 to configure pin 15 (blue LED) of GPIOD to "g/p output mode"
-  GPIOD_MODER |= (1 << 30);
+  // set bits 24-30 to configure pins 12-15 (LEDs) of GPIOD to "general purpose output mode"
+  for (int pin = 12; pin <=15; pin++) {
+    GPIOD_MODER |= (1 << (pin * 2));
+  }
 
   // GPIOD_ODR (output data register) is at offset 0x14
   #define GPIOD_ODR (*(volatile unsigned int *)(GPIOD_BASE + 0x14))
