@@ -33,15 +33,27 @@ int main(void)
   // RCC base address (from the memory map chapter). Note: end all hex address defines with UL (unsigned long)
   #define RCC_BASE  0x40023800UL
 
-  // AHB1ENR is at offset 0x30
+  // AHB1ENR is at offset 0x30. GPIOA/D lives here
   #define RCC_AHB1ENR  (*(volatile unsigned int *)(RCC_BASE + 0x30))
+  // APB1ENR is at offset 0x40. UART2 lives here.
+  #define RCC_APB1ENR (*(volatile unsigned int *)(RCC_BASE + 0x40))
 
-  // Set bit 3 to enable GPIOD clock. Note: this enables clock for PD0 - PD15
+  // Set bit 0 in AHB1 bus to enable GPIOA clock. Note: this enables clock for PA0 - PA15
+  RCC_AHB1ENR |= (1 << 0);
+  volatile unsigned int tmp = RCC_AHB1ENR; (void) tmp; // void tmp tells compiler to ignore unused var
+  // Set bit 3 in AHB1 bus to enable GPIOD clock. Note: this enables clock for PD0 - PD15
   RCC_AHB1ENR |= (1 << 3);
   // Readback after clock enable (force CPU to wait for write to complete)
   volatile unsigned int tmp = RCC_AHB1ENR; (void) tmp; // void tmp tells compiler to ignore unused var
+  // set bit 17 in the APB1 bus to enable USART2 clock
+  RCC_APB1ENR |= (1 << 17);
 
-  // GPIOD base address (from memory map). Note: unsigned long tells compiler to treat it as 32-bit value rather than signed integer
+  // GPIOA base address. PA2 and PA3 (for UART comms) live here.
+  #define GPIOA_BASE 0x40020000UL
+  // USART2 base address
+  #define USART2_BASE 0x40004400UL
+
+  // GPIOD base address (from memory map). LEDs live here. UL = unsigned long, compiler treats it as 32-bit value rather than signed integer
   #define GPIOD_BASE  0x40020C00UL
 
   // GPIOD_MODER is the first register in GPIOD
