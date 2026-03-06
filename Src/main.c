@@ -40,13 +40,12 @@ int main(void)
 
   // Set bit 0 in AHB1 bus to enable GPIOA clock. Note: this enables clock for PA0 - PA15
   RCC_AHB1ENR |= (1 << 0);
-  volatile unsigned int tmp = RCC_AHB1ENR; (void) tmp; // void tmp tells compiler to ignore unused var
   // Set bit 3 in AHB1 bus to enable GPIOD clock. Note: this enables clock for PD0 - PD15
   RCC_AHB1ENR |= (1 << 3);
-  // Readback after clock enable (force CPU to wait for write to complete)
-  volatile unsigned int tmp = RCC_AHB1ENR; (void) tmp; // void tmp tells compiler to ignore unused var
   // set bit 17 in the APB1 bus to enable USART2 clock
   RCC_APB1ENR |= (1 << 17);
+  // Readback after clock enable (force CPU to wait for write to complete)
+  volatile unsigned int tmp = RCC_AHB1ENR; (void) tmp; // void tmp tells compiler to ignore unused var
 
   // GPIOA base address. PA2 and PA3 (for UART comms) live here.
   #define GPIOA_BASE 0x40020000UL
